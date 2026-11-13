@@ -1,0 +1,16 @@
+# Local working notes for the maintainer's editor setup, not part of the project
+LANE_BRIEF.md
+LANE_STATUS.md
+HANDOFF.md
+
+# Printable copies kept for personal use. Rebuild them with tools/build_pdf.py.
+# Delete the next line to publish them with the repository.
+*.pdf
+
+# Build output and Python caches
+dist/
+__pycache__/
+
+# Old skill-creator evaluation workspaces and results written by claude plugin eval
+*launch-checklist-workspace/
+evals/results/

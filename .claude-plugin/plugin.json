@@ -1,0 +1,23 @@
+{
+  "name": "launch-checklist",
+  "displayName": "Launch Checklist",
+  "version": "0.1.0",
+  "description": "Builds a project-specific pre-launch and post-launch checklist for any digital product, with priorities, launch blockers, verification steps and evidence.",
+  "author": {
+    "name": "Achal Jain",
+    "url": "https://github.com/Achal13jain"
+  },
+  "homepage": "https://launch-checklist-skill.pages.dev/",
+  "repository": "https://github.com/Achal13jain/launch-checklist-skill",
+  "license": "MIT",
+  "keywords": [
+    "launch",
+    "checklist",
+    "production-readiness",
+    "go-live",
+    "audit",
+    "security",
+    "compliance",
+    "seo"
+  ]
+}

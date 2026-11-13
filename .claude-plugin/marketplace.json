@@ -1,0 +1,15 @@
+{
+  "name": "launch-checklist",
+  "description": "A single skill that builds a project-specific launch checklist for any digital product.",
+  "owner": {
+    "name": "Achal Jain",
+    "url": "https://github.com/Achal13jain"
+  },
+  "plugins": [
+    {
+      "name": "launch-checklist",
+      "source": "./",
+      "description": "Builds a project-specific pre-launch and post-launch checklist for any digital product, with priorities, launch blockers, verification steps and evidence."
+    }
+  ]
+}
