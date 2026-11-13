@@ -1,0 +1,15 @@
+# Launch Checklist
+
+> An open-source agent skill that inspects a repository and live site, then writes a project-specific launch checklist with priorities, launch blockers, verification steps and evidence.
+
+The skill inspects without changing anything by default. It covers legal and compliance, infrastructure, security, SEO, accessibility, quality assurance, monitoring, performance, email, documentation, marketing, backups, account ownership, cost and launch-day operations, for fifteen kinds of digital product. It is not legal, security or compliance advice.
+
+## Project
+
+- [Home page](https://launch-checklist-skill.pages.dev/): Overview, an interactive view of the checklist library, and installation guidance.
+- [GitHub repository](https://github.com/Achal13jain/launch-checklist-skill): Source, releases and issue tracker.
+- [README](https://github.com/Achal13jain/launch-checklist-skill/blob/main/README.md): Short introduction and installation commands.
+- [Skill instructions](https://github.com/Achal13jain/launch-checklist-skill/blob/main/skills/launch-checklist/SKILL.md): The portable agent skill.
+- [Core checklist](https://github.com/Achal13jain/launch-checklist-skill/blob/main/skills/launch-checklist/references/core-checklist.md): The items common to most launches.
+- [Official sources](https://github.com/Achal13jain/launch-checklist-skill/blob/main/skills/launch-checklist/references/sources.md): The pages the skill verifies against.
+- [License](https://github.com/Achal13jain/launch-checklist-skill/blob/main/LICENSE): MIT license.

@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch Checklist</title>
+<meta name="description" content="An open-source agent skill that inspects your repository and live site, then writes a launch checklist for your project: what blocks launch, what can wait and what does not apply.">
+<meta property="og:title" content="Launch Checklist">
+<meta property="og:description" content="A launch checklist written for your project, not for every project. An open-source agent skill for Claude Code and other Agent Skills tools.">
+<link rel="canonical" href="https://launch-checklist-skill.pages.dev/">
+<meta property="og:url" content="https://launch-checklist-skill.pages.dev/">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#eef0f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111315" media="(prefers-color-scheme: dark)">
+<link rel="preload" href="fonts/ibm-plex-sans-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f5b53f'/%3E%3Cpath d='m9 16.5 5 5 9-11' fill='none' stroke='%231b1403' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script>try { var t = localStorage.getItem("lc-theme"); if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<style>
+@font-face { font-family: "IBM Plex Sans"; src: url("fonts/ibm-plex-sans-latin-wght.woff2") format("woff2"); font-weight: 100 700; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url("fonts/ibm-plex-mono-latin-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+:root {
+  color-scheme: light dark;
+  --bg: #eef0f2;
+  --panel: #ffffff;
+  --panel-2: #f5f6f8;
+  --ink: #14171a;
+  --ink-2: #474e55;
+  --ink-3: #666d74;
+  --line: #d2d7dc;
+  --line-2: #a9b0b7;
+  --amber: #f2ab27;
+  --amber-ink: #7a4d00;
+  --on-amber: #1b1403;
+  --red: #b5362a;
+  --green: #1b7145;
+  --blue: #215d9c;
+  --grey: #5a6168;
+  --code-bg: #14171a;
+  --code-head: #23272b;
+  --code-ink: #eef0f2;
+  --code-label: #aab1b8;
+  --focus: #215d9c;
+  --r: 8px;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111315;
+    --panel: #191c1f;
+    --panel-2: #1f2327;
+    --ink: #edece8;
+    --ink-2: #b6bab4;
+    --ink-3: #8f948d;
+    --line: #2e3338;
+    --line-2: #4a5057;
+    --amber: #f5b53f;
+    --amber-ink: #f5b53f;
+    --red: #ff8073;
+    --green: #63d597;
+    --blue: #80bbf3;
+    --grey: #a0a59e;
+    --code-bg: #0a0c0d;
+    --code-head: #16191b;
+    --code-ink: #edece8;
+    --code-label: #9aa097;
+    --focus: #f5b53f;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111315;
+  --panel: #191c1f;
+  --panel-2: #1f2327;
+  --ink: #edece8;
+  --ink-2: #b6bab4;
+  --ink-3: #8f948d;
+  --line: #2e3338;
+  --line-2: #4a5057;
+  --amber: #f5b53f;
+  --amber-ink: #f5b53f;
+  --red: #ff8073;
+  --green: #63d597;
+  --blue: #80bbf3;
+  --grey: #a0a59e;
+  --code-bg: #0a0c0d;
+  --code-head: #16191b;
+  --code-ink: #edece8;
+  --code-label: #9aa097;
+  --focus: #f5b53f;
+}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1rem/1.6 var(--sans); }
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+a { color: var(--blue); text-underline-offset: 0.18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+code { font-family: var(--mono); font-size: 0.92em; }
+p code, li code { background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 0.05em 0.3em; white-space: nowrap; }
+.ic { width: 1.1em; height: 1.1em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.ic-fill { fill: currentColor; stroke: none; }
+.wrap { max-width: 76rem; margin: 0 auto; padding: 0 1.5rem; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip { position: absolute; left: 1rem; top: -4rem; background: var(--amber); color: var(--on-amber); padding: 0.5rem 0.9rem; border-radius: 6px; font-weight: 600; z-index: 20; }
+.skip:focus { top: 0.75rem; }
+
+/* Header */
+.top { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 1.5rem; height: 4rem; }
+.brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 650; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+.logo { width: 1.8rem; height: 1.8rem; border-radius: 6px; background: var(--amber); color: var(--on-amber); display: grid; place-items: center; }
+.logo .ic { stroke-width: 2.6; }
+.top nav { margin-left: auto; display: flex; gap: 1.6rem; }
+.top nav a { color: var(--ink-2); text-decoration: none; font-size: 0.95rem; font-weight: 500; }
+.top nav a:hover { color: var(--ink); }
+.top-actions { display: flex; gap: 0.6rem; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; font: 600 1rem/1 var(--sans); padding: 0.8rem 1.15rem; border-radius: 6px; border: 1px solid var(--line-2); background: var(--panel); color: var(--ink); text-decoration: none; cursor: pointer; }
+.btn:hover { border-color: var(--ink); }
+.btn-primary { background: var(--amber); border-color: var(--amber); color: var(--on-amber); }
+.btn-primary:hover { border-color: var(--ink); }
+.btn-sm { padding: 0.55rem 0.8rem; font-size: 0.9rem; }
+
+/* Lamps: the small state labels used on every checklist row */
+.lamp { --lamp: var(--grey); display: inline-block; font-size: 0.74rem; font-weight: 600; line-height: 1.5; padding: 0 0.45rem; border-radius: 3px; color: var(--lamp); border: 1px solid color-mix(in srgb, var(--lamp) 45%, transparent); background: color-mix(in srgb, var(--lamp) 12%, transparent); white-space: nowrap; }
+.p-C { --lamp: var(--red); }
+.p-H { --lamp: var(--amber-ink); }
+.p-M { --lamp: var(--blue); }
+.p-L { --lamp: var(--grey); }
+.l-ok { --lamp: var(--green); }
+.l-ask { --lamp: var(--blue); border-style: dashed; }
+.l-out { --lamp: var(--grey); }
+
+/* Checklist rows with dot leaders, as on a printed pre-flight card */
+.row { display: flex; align-items: baseline; gap: 0.6rem; padding: 0.42rem 0; }
+.row .id { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-3); flex: none; min-width: 3.2rem; }
+.row .t { flex: 0 1 auto; }
+.row .dots { flex: 1 1 1.5rem; min-width: 1.5rem; border-bottom: 2px dotted var(--line-2); transform: translateY(-0.28em); }
+.row.s-out .t { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--line-2); }
+
+/* Hero */
+.hero { padding-top: 3.5rem; padding-bottom: 4rem; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 3rem; align-items: start; }
+.badges { display: flex; gap: 0.5rem; margin-bottom: 1.4rem; }
+.badge { font-size: 0.8rem; font-weight: 600; padding: 0.1rem 0.6rem; border-radius: 4px; border: 1px solid var(--line-2); color: var(--ink-2); }
+h1 { font-size: clamp(2.6rem, 6vw, 4.3rem); line-height: 1.02; letter-spacing: -0.035em; font-weight: 700; }
+.tagline { font-size: clamp(1.3rem, 2.4vw, 1.65rem); line-height: 1.3; margin-top: 1.1rem; max-width: 24ch; }
+.hero-text { color: var(--ink-2); margin-top: 1.1rem; max-width: 34rem; font-size: 1.06rem; }
+.cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.8rem; }
+
+/* Hero console */
+.console-bar { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+.seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: 6px; overflow: hidden; background: var(--panel); }
+.seg button { font: 600 0.88rem/1 var(--sans); padding: 0.6rem 0.85rem; background: none; border: 0; border-left: 1px solid var(--line); color: var(--ink-2); cursor: pointer; }
+.seg button:first-child { border-left: 0; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--amber); color: var(--on-amber); }
+.console-box { border: 1px solid var(--line-2); border-radius: var(--r); background: var(--panel); overflow: hidden; }
+.console-body { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 8fr); }
+.console-body > div { padding: 1.1rem 1.2rem 1.2rem; }
+.found { border-right: 1px solid var(--line); background: var(--panel-2); }
+.mini { font-size: 0.82rem; font-weight: 600; color: var(--ink-3); margin-bottom: 0.7rem; }
+.found dt { font-size: 0.78rem; color: var(--ink-3); margin-top: 0.7rem; }
+.found dt:first-child { margin-top: 0; }
+.found dd { font-size: 0.92rem; font-weight: 500; line-height: 1.35; }
+.counts { display: flex; flex-wrap: wrap; gap: 0.3rem 1.3rem; padding-bottom: 0.7rem; margin-bottom: 0.3rem; border-bottom: 1px solid var(--line); font-size: 0.86rem; color: var(--ink-2); }
+.counts b { font-size: 1.5rem; line-height: 1; font-weight: 650; color: var(--ink); margin-right: 0.3rem; font-variant-numeric: tabular-nums; }
+.console .row { font-size: 0.9rem; line-height: 1.35; padding: 0.36rem 0; }
+.console .row .id { min-width: 2.9rem; font-size: 0.76rem; }
+.console-notes { margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid var(--line); font-size: 0.84rem; color: var(--ink-2); display: grid; gap: 0.3rem; }
+.console-notes b { color: var(--ink); font-weight: 600; }
+.console-foot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.console-foot div { padding: 0.75rem 1.2rem; font-size: 0.78rem; color: var(--ink-3); border-left: 1px solid var(--line); }
+.console-foot div:first-child { border-left: 0; }
+.console-foot strong { display: block; font-size: 0.9rem; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.console-foot .v-high { color: var(--red); }
+.console-foot .v-mod { color: var(--amber-ink); }
+.console-foot .v-low { color: var(--green); }
+.console figcaption { font-size: 0.86rem; color: var(--ink-3); margin-top: 0.7rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .console.anim .row, .console.anim .console-notes { opacity: 0; animation: tick 0.4s ease-out forwards; animation-delay: calc(var(--i, 0) * 90ms + 120ms); }
+  @keyframes tick { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+}
+
+/* Bands */
+.band { padding: 4.5rem 0; border-top: 1px solid var(--line); }
+h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); line-height: 1.1; letter-spacing: -0.025em; font-weight: 700; max-width: 22ch; }
+.lede { color: var(--ink-2); font-size: 1.1rem; max-width: 42rem; margin-top: 1rem; }
+h3 { font-size: 1.1rem; line-height: 1.3; font-weight: 650; }
+
+.beliefs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; }
+.beliefs li { border-top: 3px solid var(--amber); padding-top: 1rem; }
+.beliefs p { color: var(--ink-2); margin-top: 0.4rem; }
+
+/* Picker */
+.picker { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 2.5rem; margin-top: 2.5rem; align-items: start; }
+.controls { display: grid; gap: 1.6rem; position: sticky; top: 5rem; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { font-weight: 650; padding: 0; margin-bottom: 0.7rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.chip { font: 500 0.9rem/1 var(--sans); padding: 0.5rem 0.75rem; border-radius: 999px; border: 1px solid var(--line-2); background: var(--panel); color: var(--ink-2); cursor: pointer; }
+.chip:hover { border-color: var(--ink); color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: var(--on-amber); font-weight: 600; }
+.facts .chip { border-radius: 6px; display: inline-flex; align-items: center; gap: 0.45rem; }
+.facts .chip::before { content: ""; width: 0.8rem; height: 0.8rem; border: 1.5px solid currentColor; border-radius: 2px; }
+.facts .chip[aria-pressed="true"] { background: var(--panel); border-color: var(--ink); color: var(--ink); }
+.facts .chip[aria-pressed="true"]::before { background: var(--amber); border-color: var(--amber); box-shadow: inset 0 0 0 2px var(--panel); }
+.hint { font-size: 0.88rem; color: var(--ink-3); margin-top: 0.7rem; }
+.results { border: 1px solid var(--line-2); border-radius: var(--r); background: var(--panel); overflow: hidden; }
+.tally { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
+.tally div { padding: 1rem 1.2rem; border-left: 1px solid var(--line); font-size: 0.88rem; color: var(--ink-2); line-height: 1.3; }
+.tally div:first-child { border-left: 0; }
+.tally b { display: block; font-size: 2.2rem; line-height: 1.1; font-weight: 650; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.results-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--line); background: var(--panel-2); }
+.mix { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; font-size: 0.86rem; color: var(--ink-2); }
+.results-bar .seg button { padding: 0.5rem 0.7rem; font-size: 0.82rem; }
+.sheet { max-height: 34rem; overflow: auto; padding: 0 1.2rem 1rem; }
+.sheet h3 { position: sticky; top: 0; background: var(--panel); padding: 1rem 0 0.45rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-size: 0.98rem; z-index: 1; }
+.sheet h3 a { font-size: 0.8rem; font-weight: 500; white-space: nowrap; }
+.sheet .row { font-size: 0.93rem; line-height: 1.4; border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent); }
+.sheet .empty { color: var(--ink-3); font-size: 0.9rem; padding: 0.5rem 0; }
+.nojs { margin-top: 1.5rem; color: var(--ink-2); }
+.js .nojs { display: none; }
+
+/* Sample item */
+.anatomy { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 3rem; margin-top: 2.5rem; align-items: start; }
+.item-card { border: 1px solid var(--line-2); border-radius: var(--r); background: var(--panel); padding: 1.4rem 1.5rem; }
+.item-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line); }
+.item-head .box { width: 1.05rem; height: 1.05rem; border: 2px solid var(--ink-2); border-radius: 3px; flex: none; }
+.item-head .id { font-family: var(--mono); font-size: 0.85rem; color: var(--ink-3); }
+.item-head h3 { flex: 1 1 14rem; }
+.item-card dl { margin-top: 0.4rem; }
+.item-card .f { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 1rem; padding: 0.6rem 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent); font-size: 0.95rem; }
+.item-card .f:last-child { border-bottom: 0; padding-bottom: 0; }
+.item-card dt { color: var(--ink-3); font-size: 0.86rem; padding-top: 0.08rem; }
+.item-note { font-size: 0.86rem; color: var(--ink-3); margin-top: 0.7rem; }
+.gains li { padding: 0.9rem 0; border-top: 1px solid var(--line); }
+.gains li:first-child { border-top: 0; padding-top: 0; }
+.gains p { color: var(--ink-2); margin-top: 0.2rem; }
+
+/* Steps */
+.steps { counter-reset: step; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 3rem; margin-top: 2.5rem; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.9rem; padding: 1.1rem 0; border-top: 1px solid var(--line); }
+.steps li::before { content: counter(step); font: 400 1rem/1.6 var(--mono); color: var(--amber-ink); border: 1px solid var(--line-2); border-radius: 6px; height: 2.2rem; display: grid; place-items: center; }
+.steps p { color: var(--ink-2); margin-top: 0.15rem; }
+.after-steps { margin-top: 1.5rem; padding: 1rem 1.2rem; border-left: 3px solid var(--amber); background: var(--panel); border-radius: 0 6px 6px 0; max-width: 46rem; }
+
+/* Timeline */
+.rail { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin-top: 3rem; }
+.rail li { position: relative; border-top: 2px solid var(--line-2); padding: 1.4rem 1.2rem 0 0; }
+.rail li::before { content: ""; position: absolute; top: -0.45rem; left: 0; width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--bg); border: 2px solid var(--line-2); }
+.rail li.go { border-top-color: var(--amber); }
+.rail li.go::before { background: var(--amber); border-color: var(--amber); width: 1rem; height: 1rem; top: -0.58rem; }
+.rail h3 { font-size: 1rem; }
+.rail p { font-size: 0.92rem; color: var(--ink-2); margin-top: 0.35rem; }
+.rail-note { margin-top: 2rem; color: var(--ink-2); max-width: 46rem; }
+
+/* Prompts */
+.prompts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 2.5rem; }
+.prompt { position: relative; border: 1px solid var(--line-2); border-radius: var(--r); background: var(--panel); padding: 1.1rem 3.4rem 1.1rem 1.2rem; }
+.prompt q { quotes: none; }
+.copy { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 5px; border: 1px solid transparent; background: none; color: inherit; cursor: pointer; }
+.copy:hover { border-color: currentColor; }
+.copy.done { color: var(--green); }
+.prompt .copy { position: absolute; top: 0.7rem; right: 0.7rem; color: var(--ink-3); }
+
+/* Install */
+.tabs { margin-top: 2.5rem; }
+.tablist { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.tablist button { font: 600 0.92rem/1.2 var(--sans); text-align: left; padding: 0.65rem 0.95rem; border-radius: 6px; border: 1px solid var(--line-2); background: var(--panel); color: var(--ink-2); cursor: pointer; }
+.tablist button small { display: block; font-size: 0.76rem; font-weight: 400; margin-top: 0.1rem; }
+.tablist button:hover { border-color: var(--ink); }
+.tablist button[aria-selected="true"] { background: var(--amber); border-color: var(--amber); color: var(--on-amber); }
+.panel { border: 1px solid var(--line-2); border-radius: var(--r); background: var(--panel); padding: 1.5rem; margin-bottom: 1rem; }
+.panel > h3 { font-size: 1.25rem; margin-bottom: 0.9rem; }
+.js .panel > h3 { display: none; }
+.panel h4 { font-size: 1.02rem; font-weight: 650; margin: 1.5rem 0 0.5rem; }
+.panel h4:first-of-type { margin-top: 0; }
+.panel p { color: var(--ink-2); max-width: 46rem; margin-bottom: 0.7rem; }
+.notice { display: flex; gap: 0.6rem; align-items: flex-start; padding: 0.7rem 0.9rem; border: 1px solid color-mix(in srgb, var(--amber-ink) 45%, transparent); background: color-mix(in srgb, var(--amber) 12%, transparent); border-radius: 6px; margin-bottom: 1.2rem; }
+.notice .ic { color: var(--amber-ink); margin-top: 0.25rem; }
+.notice p { margin: 0; color: var(--ink); }
+.code { background: var(--code-bg); color: var(--code-ink); border-radius: 6px; overflow: hidden; margin: 0 0 0.9rem; max-width: 46rem; }
+.code-head { display: flex; justify-content: space-between; align-items: center; min-height: 2.3rem; padding: 0.1rem 0.4rem 0.1rem 0.9rem; background: var(--code-head); color: var(--code-label); font-size: 0.78rem; }
+.code pre { margin: 0; padding: 0.8rem 0.9rem; overflow-x: auto; font: 400 0.88rem/1.6 var(--mono); }
+
+/* Trust */
+.trust { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 3rem; align-items: start; }
+.trust h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
+.yes { margin-top: 1.4rem; display: grid; gap: 0.75rem; }
+.yes li { display: grid; grid-template-columns: 1.3rem minmax(0, 1fr); gap: 0.7rem; color: var(--ink-2); }
+.yes .ic { color: var(--green); margin-top: 0.28rem; }
+.status { border: 1px solid var(--line-2); border-radius: var(--r); background: var(--panel); padding: 1.4rem 1.5rem; }
+.status h3 { font-size: 1.15rem; margin-bottom: 0.6rem; }
+.status p { color: var(--ink-2); margin-bottom: 0.7rem; }
+.status p:last-child { margin-bottom: 0; }
+
+/* Footer */
+footer { border-top: 1px solid var(--line); padding: 3rem 0 4rem; font-size: 0.93rem; color: var(--ink-2); }
+.foot { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 4fr); gap: 3rem; }
+.foot .brand { margin-bottom: 0.8rem; }
+.foot p { margin-bottom: 0.5rem; max-width: 26rem; }
+.foot h2 { font-size: 0.95rem; letter-spacing: 0; font-weight: 650; color: var(--ink); margin-bottom: 0.7rem; }
+.foot li { margin-bottom: 0.4rem; }
+
+@media (max-width: 62rem) {
+  .hero-grid, .picker, .anatomy, .trust { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+  .controls { position: static; }
+  .beliefs { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .rail { grid-template-columns: minmax(0, 1fr); margin-top: 2rem; }
+  .rail li { border-top: 0; border-left: 2px solid var(--line-2); padding: 0 0 1.5rem 1.4rem; }
+  .rail li.go { border-left-color: var(--amber); }
+  .rail li::before { top: 0.3rem; left: -0.47rem; }
+  .rail li.go::before { top: 0.2rem; left: -0.6rem; }
+  .foot { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+}
+@media (max-width: 46rem) {
+  .wrap { padding: 0 1rem; }
+  .top nav { display: none; }
+  .top-actions { margin-left: auto; }
+  .gh-label { display: none; }
+  .hero { padding-top: 2.2rem; padding-bottom: 3rem; }
+  .band { padding: 3.2rem 0; }
+  .console-body { grid-template-columns: minmax(0, 1fr); }
+  .found { border-right: 0; border-bottom: 1px solid var(--line); }
+  .found dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem 1rem; }
+  .found dt { margin-top: 0; }
+  .console-foot { grid-template-columns: minmax(0, 1fr); }
+  .console-foot div { border-left: 0; border-top: 1px solid var(--line); }
+  .console-foot div:first-child { border-top: 0; }
+  .seg button { padding: 0.6rem 0.6rem; font-size: 0.82rem; }
+  .tally b { font-size: 1.7rem; }
+  .tally div { padding: 0.8rem 0.8rem; font-size: 0.8rem; }
+  .steps, .prompts { grid-template-columns: minmax(0, 1fr); }
+  .item-card .f { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
+  .row .dots { display: none; }
+  .row .t { flex: 1 1 auto; }
+  .panel { padding: 1.1rem; }
+  p code, li code { white-space: normal; overflow-wrap: anywhere; }
+}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" hidden>
+  <symbol id="i-logo" viewBox="0 0 24 24"><path d="m6 12.5 4 4 8-9"/></symbol>
+  <symbol id="i-gh" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+  <symbol id="i-tick" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 6v12l10-6z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 3 19h18zM12 10v4M12 16.5h.01"/></symbol>
+  <symbol id="i-yes" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.8 2.8L16 9.5"/></symbol>
+</svg>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-logo"/></svg></span><span>Launch Checklist</span></a>
+    <nav aria-label="Sections">
+      <a href="#checks">What it checks</a>
+      <a href="#how">How it works</a>
+      <a href="#install">Install</a>
+    </nav>
+    <div class="top-actions">
+      <button type="button" class="btn btn-sm theme-toggle" hidden><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg></button>
+      <a class="btn btn-sm" href="https://github.com/Achal13jain/launch-checklist-skill"><svg class="ic ic-fill" aria-hidden="true"><use href="#i-gh"/></svg><span class="gh-label">View on GitHub</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap hero" id="top">
+    <div class="hero-grid">
+      <div>
+        <p class="badges"><span class="badge">v0.1.0</span><span class="badge">MIT license</span></p>
+        <h1>Launch Checklist</h1>
+        <p class="tagline">A launch checklist written for your project, not for every project.</p>
+        <p class="hero-text">An open-source agent skill for Claude Code and other agents that support the Agent Skills format. It reads your repository and live site, asks only what it cannot see, and writes a tracked checklist: what blocks launch, what can wait, and what does not apply to you.</p>
+        <p class="cta"><a class="btn btn-primary" href="#install">Install</a><a class="btn" href="https://github.com/Achal13jain/launch-checklist-skill"><svg class="ic ic-fill" aria-hidden="true"><use href="#i-gh"/></svg>View on GitHub</a></p>
+      </div>
+
+      <figure class="console" aria-labelledby="console-cap">
+        <div class="console-bar" hidden>
+          <div class="seg" role="group" aria-label="Example project">
+            <button type="button" data-ex="0">Portfolio site</button>
+            <button type="button" data-ex="1">B2B SaaS</button>
+            <button type="button" data-ex="2">Mobile AI app</button>
+          </div>
+          <button type="button" class="btn btn-sm console-play"><svg class="ic" aria-hidden="true"><use href="#i-pause"/></svg><span>Pause</span></button>
+        </div>
+        <div class="console-box">
+          <div class="console-body">
+            <div class="found">
+              <p class="mini">Found in the project</p>
+              <dl></dl>
+            </div>
+            <div>
+              <p class="mini">The checklist it writes</p>
+              <p class="counts"></p>
+              <ul class="rows"></ul>
+              <div class="console-notes"></div>
+              <p class="nojs">Three example projects are shown here when JavaScript is on. The full checklist library is in the repository.</p>
+            </div>
+          </div>
+          <div class="console-foot"></div>
+        </div>
+        <figcaption id="console-cap">Counts come from the skill's own library, filtered for each example project.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <section class="band" aria-labelledby="beliefs-h">
+    <div class="wrap">
+      <h2 id="beliefs-h" class="visually-hidden">What shapes the checklist</h2>
+      <ul class="beliefs">
+        <li><h3>Specific beats complete.</h3><p>A long generic list hides the ten items that matter. Items that do not apply are ruled out, each with a reason you can read.</p></li>
+        <li><h3>Evidence beats assumption.</h3><p>Where it can, the skill checks the repository and the live site first, and sets each status from what it finds.</p></li>
+        <li><h3>Rules change.</h3><p>For laws, store policies and provider terms it opens the official page when you use it, and records the address and the date.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" id="checks" aria-labelledby="checks-h">
+    <div class="wrap">
+      <h2 id="checks-h">The list changes with the project.</h2>
+      <p class="lede">The library holds <span data-total>439</span> items across fifteen categories and twenty kinds of project. Pick what you are launching to see which ones stay. This picker is a simplified view; the skill also reads your project, adjusts priorities and records why each item was left out.</p>
+      <div class="picker" hidden>
+        <div class="controls">
+          <fieldset>
+            <legend>What are you launching?</legend>
+            <div class="chips" data-types></div>
+            <p class="hint">Choose every type that fits. A product can be several at once.</p>
+          </fieldset>
+          <fieldset class="facts">
+            <legend>What does it have?</legend>
+            <div class="chips" data-facts></div>
+            <p class="hint">These follow the types you chose. Change any that are wrong for your project.</p>
+          </fieldset>
+        </div>
+        <div class="results">
+          <div class="tally" aria-live="polite">
+            <div><b data-n="in">0</b>items apply</div>
+            <div><b data-n="ask">0</b>wait on a detail the skill asks about</div>
+            <div><b data-n="out">0</b>are left out, with a reason</div>
+          </div>
+          <div class="results-bar">
+            <p class="mix" data-mix></p>
+            <div class="seg" role="group" aria-label="Rows to show">
+              <button type="button" data-view="crit" aria-pressed="true">Critical</button>
+              <button type="button" data-view="in" aria-pressed="false">All that apply</button>
+              <button type="button" data-view="all" aria-pressed="false">Whole library</button>
+            </div>
+          </div>
+          <div class="sheet" tabindex="0" role="region" aria-label="Checklist items" data-sheet></div>
+        </div>
+      </div>
+      <p class="nojs">The picker needs JavaScript. The full library is in the repository under <a href="https://github.com/Achal13jain/launch-checklist-skill/tree/main/skills/launch-checklist/references">skills/launch-checklist/references</a>.</p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="item-h">
+    <div class="wrap">
+      <h2 id="item-h">Every item says why, and how to prove it.</h2>
+      <p class="lede">An item is a task someone can finish and someone else can check. This is the shape of one item in the file the skill writes.</p>
+      <div class="anatomy">
+        <div>
+          <article class="item-card" aria-label="Example checklist item">
+            <div class="item-head">
+              <span class="box" aria-hidden="true"></span><span class="id">B3</span>
+              <h3>Force HTTPS on every production host</h3>
+              <span class="lamp p-C">Critical</span>
+            </div>
+            <dl>
+              <div class="f"><dt>Description</dt><dd>Redirect all HTTP requests to HTTPS and send an HSTS header.</dd></div>
+              <div class="f"><dt>Why</dt><dd>Protects data in transit and stops browsers from using an insecure connection.</dd></div>
+              <div class="f"><dt>Verification</dt><dd>Request the http address and confirm a redirect to https, then read the response headers.</dd></div>
+              <div class="f"><dt>Gate</dt><dd><span class="lamp p-C">Blocker</span></dd></div>
+              <div class="f"><dt>Depends on</dt><dd><code>B1</code> <code>B2</code></dd></div>
+              <div class="f"><dt>Status</dt><dd><span class="lamp l-out">Not started</span></dd></div>
+              <div class="f"><dt>Evidence</dt><dd>Checked 10 November 2026: <code>http://example.com</code> returned 200 with no redirect.</dd></div>
+            </dl>
+          </article>
+          <p class="item-note">An illustration of the format, using an example address.</p>
+        </div>
+        <ul class="gains">
+          <li><h3>A reason</h3><p>So you can judge for yourself whether an item is worth skipping.</p></li>
+          <li><h3>A check another person can repeat</h3><p>An item is done when the check passes, not when someone says so.</p></li>
+          <li><h3>Evidence with a date</h3><p>What was seen, where and when. For a law or a store rule, the official page and the day it was read.</p></li>
+          <li><h3>A gate</h3><p>Blocker, before launch, after launch, or not applicable with a one-line reason.</p></li>
+          <li><h3>An ID that never changes</h3><p>Run the skill again and it updates the same file, keeping your owners, dates and notes.</p></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <h2 id="how-h">Seven steps, in the same order every time.</h2>
+      <ol class="steps">
+        <li><div><h3>Intake</h3><p>Reads the README, manifests, deployment files and live address, then asks at most five questions, each with the default it will assume.</p></div></li>
+        <li><div><h3>Classify</h3><p>Names the project types, the risk profile, the jurisdictions to consult, and whether a bad release can be undone.</p></div></li>
+        <li><div><h3>Inspect</h3><p>Gathers evidence without changing anything: redirects, headers, DNS records, robots.txt, committed secrets, test coverage.</p></div></li>
+        <li><div><h3>Select</h3><p>Keeps the items a project fact calls for, sets each priority and gate, and lists the rest as not applicable with a reason.</p></div></li>
+        <li><div><h3>Verify</h3><p>Opens the official page for every legal, store or provider fact and records the address and date. It says so when a page cannot be reached.</p></div></li>
+        <li><div><h3>Write</h3><p>Saves <code>LAUNCH_CHECKLIST.md</code> in twelve sections, from the project overview to the go-live sign-off.</p></div></li>
+        <li><div><h3>Hand over</h3><p>Summarises the blockers, the items with outside lead time and the assumptions to confirm, and offers a CSV export for your tracker.</p></div></li>
+      </ol>
+      <p class="after-steps">Run it again later and it updates the statuses in the same file. It never starts over, because your tracking history lives there.</p>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="time-h">
+    <div class="wrap">
+      <h2 id="time-h">It plans the weeks around launch too.</h2>
+      <p class="lede">Some tasks wait on other organisations, so the checklist puts them first and fits the rest to your launch date.</p>
+      <ol class="rail">
+        <li><h3>Four weeks before</h3><p>Start what waits on others: payment provider activation, store enrolment, legal review. Decide the launch style, date and owner.</p></li>
+        <li><h3>Two weeks before</h3><p>Freeze the launch scope. Run the full test pass. Restore one backup. Turn on monitoring and alerts.</p></li>
+        <li><h3>One week before</h3><p>Fix each finding or accept it in writing. Load test at the expected peak. Rehearse the rollback once.</p></li>
+        <li><h3>The day before</h3><p>Record the go or no-go decision. Confirm who is on call and who can call a rollback.</p></li>
+        <li class="go"><h3>Launch day</h3><p>Deploy, run the smoke test, complete one real journey, watch for an hour, then announce.</p></li>
+        <li><h3>Two weeks after</h3><p>Review what failed and what the checklist missed, then close the remaining items.</p></li>
+      </ol>
+      <p class="rail-note">Rollback triggers are agreed before launch, with numbers, so nobody has to debate them under pressure.</p>
+    </div>
+  </section>
+
+  <section class="band" id="try" aria-labelledby="try-h">
+    <div class="wrap">
+      <h2 id="try-h">Ask in your own words.</h2>
+      <p class="lede">These prompts are good starting points. Copy one, or describe your own project.</p>
+      <div class="prompts">
+        <p class="prompt"><q>I am launching my SaaS next month. What have I missed?</q></p>
+        <p class="prompt"><q>Run a launch readiness check on this repository. Do not change anything.</q></p>
+        <p class="prompt"><q>We submit our app to the stores in two weeks. Give me only the launch blockers.</q></p>
+        <p class="prompt"><q>Update the launch checklist and export it to CSV for our tracker.</q></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="install" aria-labelledby="install-h">
+    <div class="wrap">
+      <h2 id="install-h">Install it in the agent you use.</h2>
+      <div class="tabs" data-tabs>
+        <div class="tablist" role="tablist" aria-label="Agents" hidden>
+          <button type="button" role="tab" aria-controls="p-claude">Claude Code<small>Plugin or copied folder</small></button>
+          <button type="button" role="tab" aria-controls="p-cli">Skills CLI<small>Many agents at once</small></button>
+          <button type="button" role="tab" aria-controls="p-codex">Codex<small>Copy the folder</small></button>
+          <button type="button" role="tab" aria-controls="p-gemini">Gemini CLI<small>Install from GitHub</small></button>
+          <button type="button" role="tab" aria-controls="p-copilot">Copilot CLI<small>Copy the folder</small></button>
+        </div>
+
+        <div class="panel" id="p-claude">
+          <h3>Claude Code</h3>
+          <div class="notice"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><p>Use either the plugin or a copied skill folder, not both, or the skill will be listed twice.</p></div>
+          <h4>As a plugin</h4>
+          <p>Inside Claude Code, add the marketplace, then install the plugin.</p>
+          <div class="code"><div class="code-head">Claude Code</div><pre><code>/plugin marketplace add Achal13jain/launch-checklist-skill</code></pre></div>
+          <div class="code"><div class="code-head">Claude Code</div><pre><code>/plugin install launch-checklist@launch-checklist</code></pre></div>
+          <p>From a terminal, the same two steps are:</p>
+          <div class="code"><div class="code-head">Terminal</div><pre><code>claude plugin marketplace add Achal13jain/launch-checklist-skill
+claude plugin install launch-checklist@launch-checklist</code></pre></div>
+          <p>Claude uses the skill when a request matches it, or you can invoke it as <code>/launch-checklist:launch-checklist</code>.</p>
+          <h4>By copying the folder</h4>
+          <p>Copy the skill into <code>~/.claude/skills/</code> for all your projects, or into a repository's <code>.claude/skills/</code> to share it with a team.</p>
+          <div class="code"><div class="code-head">Terminal</div><pre><code>git clone https://github.com/Achal13jain/launch-checklist-skill.git
+mkdir -p ~/.claude/skills
+cp -r launch-checklist/skills/launch-checklist ~/.claude/skills/</code></pre></div>
+          <p>Start a new session, then invoke it as <code>/launch-checklist</code> or just ask.</p>
+        </div>
+
+        <div class="panel" id="p-cli">
+          <h3>Skills CLI</h3>
+          <p>One command installs the skill into the agents you choose. It needs Node.js.</p>
+          <div class="code"><div class="code-head">Terminal</div><pre><code>npx skills add Achal13jain/launch-checklist-skill</code></pre></div>
+          <p>Choose an agent with <code>-a</code>, for example <code>-a claude-code</code>, and add <code>-g</code> to install it for all your projects.</p>
+        </div>
+
+        <div class="panel" id="p-codex">
+          <h3>Codex</h3>
+          <p>Codex reads personal skills from <code>~/.agents/skills</code> and a repository's skills from <code>.agents/skills</code>.</p>
+          <div class="code"><div class="code-head">Terminal</div><pre><code>git clone https://github.com/Achal13jain/launch-checklist-skill.git
+mkdir -p ~/.agents/skills
+cp -r launch-checklist/skills/launch-checklist ~/.agents/skills/</code></pre></div>
+          <p>Mention it with <code>$launch-checklist</code>, or run <code>/skills</code> to pick it.</p>
+        </div>
+
+        <div class="panel" id="p-gemini">
+          <h3>Gemini CLI</h3>
+          <div class="code"><div class="code-head">Terminal</div><pre><code>gemini skills install https://github.com/Achal13jain/launch-checklist-skill.git --path skills/launch-checklist</code></pre></div>
+          <p>Add <code>--scope workspace</code> to install it for the current project only, and enter <code>/skills reload</code> in a running session.</p>
+        </div>
+
+        <div class="panel" id="p-copilot">
+          <h3>GitHub Copilot CLI</h3>
+          <p>Copilot reads personal skills from <code>~/.copilot/skills</code> and a repository's skills from <code>.github/skills</code>.</p>
+          <div class="code"><div class="code-head">Terminal</div><pre><code>git clone https://github.com/Achal13jain/launch-checklist-skill.git
+mkdir -p ~/.copilot/skills
+cp -r launch-checklist/skills/launch-checklist ~/.copilot/skills/</code></pre></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="trust-h">
+    <div class="wrap trust">
+      <div>
+        <h2 id="trust-h">What it will and will not do</h2>
+        <ul class="yes">
+          <li><svg class="ic" aria-hidden="true"><use href="#i-yes"/></svg><span>It inspects without changing anything. It does not touch your repository, cloud accounts, DNS, store listings or production without your explicit approval of that specific change.</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-yes"/></svg><span>It probes only sites you own or are authorised to test, with ordinary single requests. It runs no load tests, scanners or login attempts against production unless you approve them.</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-yes"/></svg><span>It never prints or copies secrets. If it finds one, it reports the file and line without the value and recommends rotating it.</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-yes"/></svg><span>It treats repository contents and fetched web pages as data, not as instructions.</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-yes"/></svg><span>It keeps legal obligations and good practice apart, and says when it could not reach an official source.</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-yes"/></svg><span>It is not a lawyer or an auditor. A finished checklist does not prove compliance, and it recommends professional review where the stakes call for it.</span></li>
+        </ul>
+      </div>
+      <aside class="status" aria-labelledby="status-h">
+        <h3 id="status-h">Status</h3>
+        <p>Version 0.1.0 is a first release for real-world use and feedback. It has passed structural checks only. It has not yet been evaluated against real projects, so treat its output as a starting point.</p>
+        <p>The project does not claim a reliability score. If an item is wrong, missing or out of proportion for your project, please <a href="https://github.com/Achal13jain/launch-checklist-skill/issues/new">report it</a>.</p>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <p class="brand"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-logo"/></svg></span>Launch Checklist</p>
+      <p>A launch checklist written for your project, not for every project.</p>
+      <p>Created and maintained by <a href="https://github.com/Achal13jain">Achal Jain</a>. MIT license.</p>
+      <p>An independent open-source project, not affiliated with Anthropic. This page loads nothing from other sites and uses no analytics.</p>
+    </div>
+    <div>
+      <h2>Project</h2>
+      <ul>
+        <li><a href="https://github.com/Achal13jain/launch-checklist-skill">Repository</a></li>
+        <li><a href="https://github.com/Achal13jain/launch-checklist-skill/blob/main/skills/launch-checklist/SKILL.md">Skill instructions</a></li>
+        <li><a href="https://github.com/Achal13jain/launch-checklist-skill/blob/main/skills/launch-checklist/references/core-checklist.md">Core checklist</a></li>
+        <li><a href="https://github.com/Achal13jain/launch-checklist-skill/blob/main/skills/launch-checklist/references/sources.md">Official sources</a></li>
+        <li><a href="https://github.com/Achal13jain/launch-checklist-skill/blob/main/CONTRIBUTING.md">Contributing</a></li>
+        <li><a href="https://github.com/Achal13jain/launch-checklist-skill/blob/main/SECURITY.md">Security policy</a></li>
+        <li><a href="https://github.com/Achal13jain/launch-checklist-skill#privacy">Privacy</a></li>
+        <li><a href="https://github.com/Achal13jain/launch-checklist-skill/blob/main/LICENSE">License</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Also by Achal Jain</h2>
+      <ul>
+        <li><a href="https://engineering-advisor.pages.dev/">Engineering Advisor</a>, an agent skill that recommends the right amount of engineering process for a project.</li>
+        <li><a href="https://unsaid-rules.pages.dev/">Unsaid Rules</a>, two agent skills for grounded client messages and professional workplace writing.</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<div class="visually-hidden" aria-live="polite" id="live"></div>
+
+<script>
+(function () {
+  var doc = document, root = doc.documentElement;
+  root.classList.add("js");
+  var live = doc.getElementById("live");
+  var NS = "http://www.w3.org/2000/svg";
+  var REPO = "https://github.com/Achal13jain/launch-checklist-skill/blob/main/skills/launch-checklist/references/";
+  var PRI = { C: "Critical", H: "High", M: "Medium", L: "Low" };
+
+  function el(tag, cls, text) {
+    var e = doc.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function icon(id) {
+    var s = doc.createElementNS(NS, "svg");
+    s.setAttribute("class", "ic");
+    s.setAttribute("aria-hidden", "true");
+    var u = doc.createElementNS(NS, "use");
+    u.setAttribute("href", "#" + id);
+    s.appendChild(u);
+    return s;
+  }
+
+  /* Theme */
+  var toggle = doc.querySelector(".theme-toggle");
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  function isDark() { var t = root.getAttribute("data-theme"); return t ? t === "dark" : mq.matches; }
+  function paintToggle() {
+    var dark = isDark();
+    toggle.querySelector("use").setAttribute("href", dark ? "#i-sun" : "#i-moon");
+    toggle.setAttribute("aria-label", dark ? "Switch to the light theme" : "Switch to the dark theme");
+    toggle.title = toggle.getAttribute("aria-label");
+  }
+  toggle.hidden = false;
+  paintToggle();
+  toggle.addEventListener("click", function () {
+    var next = isDark() ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("lc-theme", next); } catch (e) {}
+    paintToggle();
+  });
+  if (mq.addEventListener) mq.addEventListener("change", paintToggle);
+
+  /* Copy buttons */
+  function addCopy(host, text, label) {
+    var b = el("button", "copy");
+    b.type = "button";
+    b.setAttribute("aria-label", label);
+    b.title = label;
+    b.appendChild(icon("i-copy"));
+    var use = b.querySelector("use");
+    b.addEventListener("click", function () {
+      navigator.clipboard.writeText(text()).then(function () {
+        use.setAttribute("href", "#i-tick");
+        b.classList.add("done");
+        live.textContent = "Copied to the clipboard";
+        setTimeout(function () { use.setAttribute("href", "#i-copy"); b.classList.remove("done"); live.textContent = ""; }, 1800);
+      }, function () { live.textContent = "Copy failed; select the text instead"; });
+    });
+    host.appendChild(b);
+  }
+  if (navigator.clipboard) {
+    doc.querySelectorAll(".code").forEach(function (c) {
+      var code = c.querySelector("code");
+      addCopy(c.querySelector(".code-head"), function () { return code.textContent; }, "Copy command");
+    });
+    doc.querySelectorAll(".prompt").forEach(function (p) {
+      var q = p.querySelector("q");
+      addCopy(p, function () { return q.textContent; }, "Copy prompt");
+    });
+  }
+
+  /* Tabs */
+  doc.querySelectorAll("[data-tabs]").forEach(function (box) {
+    var list = box.querySelector("[role=tablist]");
+    var tabs = Array.prototype.slice.call(list.querySelectorAll("[role=tab]"));
+    var panels = tabs.map(function (t, i) {
+      var p = doc.getElementById(t.getAttribute("aria-controls"));
+      t.id = p.id + "-tab";
+      p.setAttribute("role", "tabpanel");
+      p.setAttribute("aria-labelledby", t.id);
+      p.tabIndex = 0;
+      t.addEventListener("click", function () { select(i, false); });
+      t.addEventListener("keydown", function (e) {
+        var k = e.key, n = tabs.length;
+        if (k === "ArrowRight") select((i + 1) % n, true);
+        else if (k === "ArrowLeft") select((i - 1 + n) % n, true);
+        else if (k === "Home") select(0, true);
+        else if (k === "End") select(n - 1, true);
+        else return;
+        e.preventDefault();
+      });
+      return p;
+    });
+    function select(i, focus) {
+      tabs.forEach(function (t, j) {
+        var on = i === j;
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        t.tabIndex = on ? 0 : -1;
+        panels[j].hidden = !on;
+      });
+      if (focus) tabs[i].focus();
+    }
+    list.hidden = false;
+    select(0, false);
+  });
+
+  /* The checklist library. Rebuilt from the reference files by tools/build_site.py. */
+  /*LIB:START*/var LIB={"facts":[["pub","Public launch"],["web","Public web pages"],["ui","A user interface"],["srv","A backend or database"],["acct","User accounts"],["data","Personal data"],["pay","Payments"],["mail","Sends email"]],"types":[["site","Website or docs site",["pub","web","ui"]],["webapp","Web app",["pub","web","ui","srv","acct","data","app"]],["saas","SaaS",["pub","web","ui","srv","acct","data","pay","mail","app"]],["ecom","Online store",["pub","web","ui","srv","acct","data","pay","mail","app"]],["api","API or backend",["pub","srv","app"]],["mobile","Mobile app",["pub","ui","app"]],["desktop","Desktop app",["pub","ui","app"]],["ext","Browser extension",["pub","ui","app"]],["ai","AI app",["pub","ui","srv","app"]],["agent","AI agent",["pub","srv","app"]],["ml","ML model",["srv","app"]],["data","Data pipeline",["srv","app"]],["oss","Open source",["pub","app"]],["lib","Library or SDK",["pub","app"]],["cli","CLI tool",["pub","app"]],["plat","Developer platform",["pub","web","ui","srv","acct","data","app"]],["internal","Internal tool",["ui","srv","acct","data","app"]],["selfhosted","Self-hosted",["pub","ui","srv","acct","app"]],["infra","Cloud infrastructure",["srv","app"]],["iot","IoT device",["pub","srv","data","app"]]],"groups":[{"k":"A","n":"A. Legal, Compliance and Policies","core":1,"f":"core-checklist.md","items":[["A1","C","Map the personal data the product handles","data"],["A2","C","Decide in writing which laws apply",""],["A3","C","Publish a privacy policy that matches the data map","data"],["A4","H","Publish terms of service","acct|pay"],["A5","H","Inventory cookies and trackers, and gate them on consent where the law requires","?"],["A6","C","Provide working flows for user data rights","data"],["A7","H","Record consent","?"],["A8","H","Set and implement a retention and deletion schedule","data"],["A9","H","Put agreements in place with vendors that process personal data","data"],["A10","H","Write the breach notification procedure","data"],["A11","C","Publish refund and cancellation terms","pay"],["A12","H","Confirm ownership or licence of everything shipped",""],["A13","H","Comply with open-source licences",""],["A14","M","Check the product name and secure the identifiers","pub"],["A15","H","Handle tax registration and invoicing","pay"],["A16","H","Decide how children are handled","?"],["A17","M","Check accessibility obligations and publish a statement","?"],["A18","H","Set rules and a takedown route for user content","?"],["A19","M","Add the disclaimers the product needs","?"],["A20","H","Get professional legal review","?"]]},{"k":"B","n":"B. Domain, Infrastructure and Deployment","core":1,"f":"core-checklist.md","items":[["B1","C","Configure and document DNS for the production domain","web|srv"],["B2","C","Serve a valid TLS certificate that renews automatically","web|srv"],["B3","C","Force HTTPS on every production host","web|srv"],["B4","H","Redirect to one canonical host","web"],["B5","C","Run production as a separate environment with its own configuration","srv"],["B6","C","Keep secrets in a secret store, outside the repository and the client bundle","srv"],["B7","C","Provision the production database with restricted access","srv"],["B8","H","Make deployment repeatable","web|srv"],["B9","C","Write and rehearse the rollback procedure","web|srv"],["B10","H","Keep database migrations compatible with the previous version","srv"],["B11","M","Configure the CDN and cache headers","web|srv"],["B12","M","Provide custom error and maintenance pages","web|srv"],["B13","H","Monitor uptime from outside","web|srv"],["B14","H","Expose a health check that tests real dependencies","srv"],["B15","H","Confirm background jobs, queues and schedules run in production","?"]]},{"k":"C","n":"C. Security","core":1,"f":"core-checklist.md","items":[["C1","C","Require authentication on every non-public route and API endpoint","srv"],["C2","C","Enforce authorisation on every object","srv"],["C3","C","Store passwords with a current password hashing algorithm, or delegate login to an identity provider","acct"],["C4","H","Require multi-factor authentication for administrators, and offer it to users where accounts hold value","acct"],["C5","C","Rate-limit authentication and expensive endpoints","srv"],["C6","H","Protect public forms from bots and spam","?"],["C7","C","Validate input on the server and use parameterised queries","srv"],["C8","C","Protect against cross-site scripting and request forgery","srv"],["C9","H","Restrict cross-origin access to known origins","srv"],["C10","H","Send security headers","web|srv"],["C11","C","Secure sessions and cookies","acct"],["C12","C","Scan the repository and its history for secrets, and rotate any found",""],["C13","H","Scan dependencies and fix known serious vulnerabilities","app"],["C14","H","Secure file uploads","?"],["C15","H","Make password reset and verification tokens single-use and short-lived","acct"],["C16","M","Publish a security contact","app"],["C17","H","Log administrative and sensitive actions","srv"],["C18","C","Remove default credentials and close administrative interfaces to the public internet","srv"],["C19","H","Return safe error messages","srv"],["C20","H","Encrypt sensitive data at rest and limit who can read it","?"],["C21","H","Give CI and deployment credentials the least privilege they need","app"],["C22","H","Commission an independent security test","?"]]},{"k":"D","n":"D. SEO and Search Visibility","core":1,"f":"core-checklist.md","items":[["D1","H","Give each public page a unique title and description","web"],["D2","H","Set a canonical URL on each public page","web"],["D3","H","Publish an XML sitemap","web"],["D4","C","Confirm robots.txt and indexing directives are correct for production","web"],["D5","M","Add Open Graph and social card metadata with a preview image","web"],["D6","M","Provide a favicon and application icons","web"],["D7","M","Add structured data where it fits","?"],["D8","M","Use one main heading per page, a logical heading order and descriptive image alt text","web"],["D9","H","Verify the site in search engine webmaster tools and submit the sitemap","web"],["D10","M","Check for broken links and redirect old URLs","web"],["D11","H","Confirm that crawlers can see the content","?"],["D12","L","Use readable, stable URLs and add language annotations for multilingual sites","web"]]},{"k":"E","n":"E. UI, UX and Accessibility","core":1,"f":"core-checklist.md","items":[["E1","H","Test the layout at phone, tablet and desktop widths","ui"],["E2","H","Test in the browsers and operating systems the audience uses","ui"],["E3","H","Design the loading, empty, error and success states","app"],["E4","H","Make forms easy to complete","app"],["E5","H","Support keyboard navigation with a visible focus indicator","ui"],["E6","H","Test with a screen reader","ui"],["E7","H","Meet colour contrast requirements","ui"],["E8","H","Run an automated accessibility scan and fix serious findings","ui"],["E9","M","Provide a helpful not-found page","web"],["E10","M","Ask for confirmation, or allow undo, on destructive actions","app"],["E11","M","Keep typography, spacing and components consistent","ui"],["E12","M","Respect user settings for zoom, text size and reduced motion","ui"],["E13","M","Check dark mode","?"],["E14","M","Check language, date, number, currency and time zone handling","?"]]},{"k":"F","n":"F. Functionality and Quality Assurance","core":1,"f":"core-checklist.md","items":[["F1","C","Test the core user journeys end to end in a production-like environment",""],["F2","C","Test every account flow","acct"],["F3","C","Test payment flows in live mode","pay"],["F4","H","Test validation on the client and the server","srv"],["F5","H","Test behaviour when third-party services fail","srv"],["F6","H","Test edge cases","app"],["F7","H","Run the automated tests on the release commit","app"],["F8","H","Test on real devices","?"],["F9","H","Test roles and permissions","?"],["F10","C","Prepare a production smoke test and run it after every deploy","web|srv"],["F11","H","Verify migrated or imported data","?"],["F12","H","Triage the open bugs and publish known issues","app"]]},{"k":"G","n":"G. Analytics, Tracking and Monitoring","core":1,"f":"core-checklist.md","items":[["G1","H","Define the launch success metrics","pub"],["G2","M","Install product or web analytics that fit the privacy position","?"],["G3","M","Verify conversion and funnel events","?"],["G4","C","Track errors in production","srv"],["G5","H","Monitor performance and resource use","srv"],["G6","H","Collect logs centrally with a retention period","srv"],["G7","C","Route alerts to a person and test them","srv"],["G8","M","Prepare a launch-day dashboard","srv"],["G9","M","Disclose and mask session recording","?"]]},{"k":"H","n":"H. Performance and Optimization","core":1,"f":"core-checklist.md","items":[["H1","M","Compress images and serve them in modern formats at the right size","ui"],["H2","M","Lazy-load content below the first screen","web"],["H3","M","Reduce the script and style bundle","web"],["H4","M","Minify and compress text assets","web"],["H5","H","Index and review the database queries on the main paths","srv"],["H6","H","Measure Core Web Vitals on the key pages","web"],["H7","H","Set and meet a response time target for the API","srv"],["H8","M","Audit fonts and third-party scripts","web"],["H9","M","Record a baseline performance audit","web"]]},{"k":"I","n":"I. Communication and Transactional Email","core":1,"f":"core-checklist.md","items":[["I1","C","Confirm every transactional email is sent from production and arrives","mail"],["I2","C","Authenticate the sending domain with SPF, DKIM and DMARC","mail"],["I3","H","Check the current bulk sender requirements of the main mailbox providers","?"],["I4","H","Test deliverability to the main mailbox providers","mail"],["I5","H","Separate transactional and marketing mail, and honour unsubscribes","?"],["I6","H","Process bounces and complaints","mail"],["I7","H","Set up monitored support and contact addresses on the product's domain",""],["I8","M","Test templates in the main mail clients","mail"],["I9","M","Confirm contact form submissions reach a person","?"],["I10","H","Meet consent and registration rules for SMS, messaging apps and push notifications","?"]]},{"k":"J","n":"J. Documentation and Support","core":1,"f":"core-checklist.md","items":[["J1","H","Write a getting started guide","app"],["J2","M","Document the main tasks","app"],["J3","M","Publish FAQs and troubleshooting for the known problems","app"],["J4","H","Show how to get support and what response time to expect","app"],["J5","H","Prepare support for launch day","app"],["J6","M","Start a changelog or release notes","app"],["J7","M","Publish known limitations","app"],["J8","H","Write the internal runbook","app"],["J9","M","Set up a status page","?"],["J10","M","Set up feedback collection and a triage routine","app"]]},{"k":"K","n":"K. Launch and Marketing Preparation","core":1,"f":"core-checklist.md","items":[["K1","H","Write the positioning in one or two sentences","pub"],["K2","H","Finish the landing page and test its call to action","pub"],["K3","H","Publish pricing that matches the billing system","pay"],["K4","M","Prepare screenshots and a short demo video","app"],["K5","M","Prepare the announcement drafts and assets","pub"],["K6","M","Prepare launch platform and directory listings","?"],["K7","M","Use only real testimonials and case studies, with permission","pub"],["K8","M","Tell the waitlist and beta users first","?"],["K9","H","Decide the launch date, style and owner",""],["K10","L","Set up campaign links for attribution","pub"]]},{"k":"L","n":"L. Backup, Recovery and Business Continuity","core":1,"f":"core-checklist.md","items":[["L1","C","Back up the database and user files automatically, to a separate location","srv"],["L2","C","Restore a backup and record how long it takes","srv"],["L3","H","State how much data loss and downtime are acceptable","srv"],["L4","H","Write an incident response plan","srv"],["L5","H","List the services the product depends on and what happens when each fails","srv"],["L6","H","Make sure a second person can operate everything","app"],["L7","M","Plan for the loss of a region or provider","?"],["L8","L","Keep the ability to export data and move providers","srv"]]},{"k":"M","n":"M. Accounts and Ownership","core":1,"f":"core-checklist.md","items":[["M1","C","Hold the domain in an account the business controls, with automatic renewal and a transfer lock","web|srv"],["M2","C","Turn on two-factor login for every critical account",""],["M3","H","Keep shared credentials and recovery codes in a password manager with a second administrator",""],["M4","H","Review who has access and remove those who no longer need it","app"],["M5","H","Confirm that plans and billing will hold through launch",""]]},{"k":"N","n":"N. Cost and Capacity","core":1,"f":"core-checklist.md","items":[["N1","C","Set billing alerts and spending limits on usage-priced services","srv"],["N2","H","Load test at the expected launch peak with a margin","?"],["N3","H","Check third-party quotas and rate limits at launch volume","srv"],["N4","H","Confirm headroom or automatic scaling","srv"],["N5","H","Add switches to turn off expensive or risky features without a deploy","srv"],["N6","M","Estimate the cost per user and per action","srv"]]},{"k":"O","n":"O. Production Hygiene","core":1,"f":"core-checklist.md","items":[["O1","C","Turn off debug mode and development tools in production","srv"],["O2","C","Remove test data, seed accounts and default users from production","srv"],["O3","C","Switch every integration to its live keys and endpoints","srv"],["O4","H","Decide whether source maps are public","srv"],["O5","H","Protect staging and preview environments","srv"],["O6","M","Remove placeholder content","ui"],["O7","H","Make the running version identifiable","srv"],["O8","H","Review the default state of every feature flag","?"]]},{"k":"site","n":"Website or docs site","core":0,"f":"type-web.md","items":[["WEB1","H","Secure the content management system","?"],["WEB2","H","Confirm who can publish and how content is backed up",""],["WEB3","M","Test every form and embedded widget",""],["WEB4","M","Publish the business details the law or the audience expects",""],["WEB5","M","Check documentation search, versioning and code samples","?"],["WEB6","L","Add a feed and sharing metadata for articles","?"]]},{"k":"webapp","n":"Web app","core":0,"f":"type-web.md","items":[["WEB7","H","Decide the browser support policy and show a message to unsupported browsers",""],["WEB8","H","Handle session expiry and lost connections without losing work",""],["WEB9","H","Make deploys safe for users who have the old version open",""],["WEB10","M","Test installed and offline behaviour","?"],["WEB11","M","Check deep links, refresh and the back button on every route","?"],["WEB12","H","Test real-time features under reconnection and across multiple instances","?"]]},{"k":"saas","n":"SaaS","core":0,"f":"type-saas.md","items":[["SAAS1","C","Isolate tenants",""],["SAAS2","C","Verify payment webhooks and process them idempotently",""],["SAAS3","C","Test the whole subscription lifecycle",""],["SAAS4","H","Enforce plan limits on the server",""],["SAAS5","H","Meter usage accurately","?"],["SAAS6","H","Handle failed payments and the grace period",""],["SAAS7","C","Make cancellation as easy as sign-up",""],["SAAS8","H","Provide account and workspace deletion and data export",""],["SAAS9","H","Design onboarding to first value",""],["SAAS10","H","Test team features","?"],["SAAS11","H","Produce correct invoices and receipts",""],["SAAS12","M","Prepare for business customers' security questions","?"],["SAAS13","H","Build internal administration tools with safeguards",""],["SAAS14","M","Define the service commitments",""],["SAAS15","M","Prevent trial and free tier abuse",""],["SAAS16","M","Send lifecycle emails",""]]},{"k":"ecom","n":"Online store","core":0,"f":"type-ecommerce.md","items":[["ECOM1","C","Place real orders end to end",""],["ECOM2","C","Keep card data out of your systems, or meet the card industry standard",""],["ECOM3","C","Verify prices, taxes, shipping costs and discounts",""],["ECOM4","H","Keep inventory accurate",""],["ECOM5","C","Publish the consumer information each market requires",""],["ECOM6","H","Define and test returns, refunds and exchanges",""],["ECOM7","H","Set up fraud controls and a chargeback process",""],["ECOM8","H","Send order emails and messages",""],["ECOM9","H","Check product data",""],["ECOM10","H","Confirm shipping and fulfilment integrations",""],["ECOM11","M","Add product structured data and a product feed",""],["ECOM12","H","Check product compliance and restricted goods","?"],["ECOM13","C","Onboard and pay sellers correctly","?"],["ECOM14","H","Moderate listings and handle disputes between buyers and sellers","?"],["ECOM15","M","Test the store under a sale",""]]},{"k":"api","n":"API or backend","core":0,"f":"type-api.md","items":[["API1","C","Authenticate every request and scope every credential",""],["API2","C","Manage API keys safely",""],["API3","C","Rate-limit by key and by IP, and document the limits",""],["API4","H","Choose a versioning policy before the first public release",""],["API5","C","Validate every request against a schema",""],["API6","H","Use one consistent error format and correct status codes",""],["API7","H","Keep responses consistent",""],["API8","H","Publish accurate documentation with examples",""],["API9","H","Support idempotency for operations that create or charge",""],["API10","H","Sign outgoing webhooks and retry them","?"],["API11","H","Paginate and bound every list endpoint",""],["API12","H","Monitor per endpoint and per customer",""],["API13","H","Test backward compatibility in CI",""],["API14","M","Provide a sandbox or test mode",""],["API15","M","Publish a deprecation and change communication process",""],["API16","H","Set timeouts, limits and circuit breakers on calls to other services",""],["API17","M","Check GraphQL-specific limits","?"]]},{"k":"mobile","n":"Mobile app","core":0,"f":"type-mobile.md","items":[["MOB1","C","Enrol in the developer programmes under the right legal entity",""],["MOB2","C","Read the current store review guidelines and check the app against them",""],["MOB3","C","Meet the store's current technical requirements",""],["MOB4","C","Secure and back up the signing keys",""],["MOB5","C","Complete the store privacy declarations accurately",""],["MOB6","C","Request only the permissions the app needs, at the moment they are needed, with a clear reason",""],["MOB7","C","Provide account deletion as the stores require","?"],["MOB8","C","Follow the store's payment rules","?"],["MOB9","H","Set up crash and error reporting with symbol files",""],["MOB10","H","Test on a range of real devices and operating system versions",""],["MOB11","H","Test poor network and offline behaviour",""],["MOB12","H","Build a forced-update and minimum-version mechanism",""],["MOB13","H","Use a staged release and pre-release testing track",""],["MOB14","H","Test push notifications","?"],["MOB15","H","Test deep links and app links","?"],["MOB16","H","Protect data on the device and in transit",""],["MOB17","H","Prepare the store listing",""],["MOB18","H","Give reviewers what they need",""],["MOB19","M","Measure start time, size, battery and memory",""],["MOB20","M","Check accessibility on each platform",""],["MOB21","M","Plan how to answer store reviews and handle removal",""]]},{"k":"desktop","n":"Desktop app","core":0,"f":"type-desktop.md","items":[["DESK1","C","Sign the application and installers for each platform",""],["DESK2","C","Protect the signing keys",""],["DESK3","C","Build and test the automatic update path",""],["DESK4","H","Test install, upgrade and uninstall",""],["DESK5","H","State and test the supported operating systems and hardware",""],["DESK6","H","Collect crash reports with consent",""],["DESK7","H","Disclose telemetry and make it controllable",""],["DESK8","H","Harden the application framework","?"],["DESK9","H","Store user data and credentials properly",""],["DESK10","H","Implement licensing and activation with an offline path","?"],["DESK11","M","Meet store requirements","?"],["DESK12","M","Host downloads reliably and publish checksums",""],["DESK13","M","Test behaviour with security software and corporate restrictions","?"],["DESK14","M","Check accessibility with the platform's assistive tools",""]]},{"k":"ext","n":"Browser extension","core":0,"f":"type-browser-extension.md","items":[["EXT1","C","Request the minimum permissions and host access",""],["EXT2","C","Write a permission justification and a single clear purpose",""],["EXT3","C","Meet the store's current manifest and code requirements",""],["EXT4","C","Disclose data use and publish a privacy policy",""],["EXT5","C","Handle page content safely",""],["EXT6","H","Test in each target browser and after browser updates",""],["EXT7","H","Test the update path",""],["EXT8","H","Prepare the store listing",""],["EXT9","H","Give reviewers test instructions and credentials",""],["EXT10","H","Limit the effect on page performance and compatibility",""],["EXT11","M","Add onboarding after install and a feedback route on uninstall",""],["EXT12","M","Secure the publisher account and plan for ownership",""],["EXT13","M","Check storage limits and sync behaviour",""],["EXT14","M","Follow the store's rules for payments and for changing browser settings","?"]]},{"k":"ai","n":"AI app","core":0,"f":"type-ai-ml.md","items":[["AI1","C","Build an evaluation set and pass it before launch",""],["AI2","C","Test for prompt injection and treat model output as untrusted",""],["AI3","C","Confirm what the provider does with the data sent to it",""],["AI4","C","Limit usage and cost per user",""],["AI5","H","Measure and reduce wrong answers",""],["AI6","H","Filter harmful input and output",""],["AI7","H","Tell users they are dealing with AI and label generated content",""],["AI8","H","Keep personal data and secrets out of prompts and logs unless needed",""],["AI9","H","Handle provider failure",""],["AI10","H","Pin model versions and plan for retirement",""],["AI11","H","Version prompts and configuration",""],["AI12","H","Measure latency and stream where it helps",""],["AI13","H","Test retrieval quality and access control","?"],["AI14","M","Collect feedback and review real conversations within the privacy rules",""],["AI15","M","Check the provider's usage policies and your right to the output",""]]},{"k":"agent","n":"AI agent","core":0,"f":"type-ai-ml.md","items":[["AGT1","C","Give the agent the least access it needs",""],["AGT2","C","Require human approval for irreversible or outward-facing actions",""],["AGT3","C","Bound every run",""],["AGT4","H","Log every action with enough detail to audit and undo",""],["AGT5","H","Isolate code execution and browsing","?"],["AGT6","H","Test the agent on realistic multi-step tasks, including failure",""],["AGT7","H","Provide a way to stop and take over",""]]},{"k":"ml","n":"ML model","core":0,"f":"type-ai-ml.md","items":[["ML1","C","Evaluate on held-out data that reflects production",""],["ML2","C","Confirm the right to use the training data and the base model",""],["ML3","H","Check data quality",""],["ML4","H","Evaluate fairness across relevant groups","?"],["ML5","H","Make training reproducible",""],["ML6","H","Version and register models, with a rollback path",""],["ML7","H","Benchmark inference latency, throughput and resource needs",""],["ML8","H","Monitor the model in production",""],["ML9","H","Define the fallback when the model is unavailable or unsure",""],["ML10","M","Document the model",""],["ML11","M","Track training and inference cost",""],["ML12","H","Test robustness",""]]},{"k":"data","n":"Data pipeline","core":0,"f":"type-data.md","items":[["DATA1","C","Make pipelines safe to run again",""],["DATA2","C","Add data quality tests that block bad data",""],["DATA3","C","Reconcile outputs against the source of truth",""],["DATA4","C","Control access to sensitive data",""],["DATA5","H","Plan and test backfills",""],["DATA6","H","Handle late, missing and duplicate source data",""],["DATA7","H","Handle schema changes in sources",""],["DATA8","H","Monitor pipelines and alert on failure and lateness",""],["DATA9","H","Record lineage and definitions",""],["DATA10","H","Version transformations and deploy them through review",""],["DATA11","H","Apply retention and deletion to the data platform",""],["DATA12","H","Control cost",""],["DATA13","H","Validate dashboards and reports with their users",""],["DATA14","M","Make analyses reproducible","?"],["DATA15","M","Define service levels and a run schedule",""],["DATA16","M","Write the recovery procedure",""]]},{"k":"oss","n":"Open source","core":0,"f":"type-open-source.md","items":[["OSS1","C","Choose a licence and add the LICENSE file",""],["OSS2","C","Confirm the right to publish the code",""],["OSS3","C","Clean the repository history before making it public",""],["OSS4","H","Write a README that gets someone to first use",""],["OSS5","H","Add CONTRIBUTING.md",""],["OSS6","M","Add a code of conduct with a contact",""],["OSS7","H","Add SECURITY.md and turn on private vulnerability reporting",""],["OSS8","M","Add issue and pull request templates",""],["OSS9","H","Run tests and checks in CI on every pull request, with safe permissions",""],["OSS10","H","Protect the main branch",""],["OSS11","H","Automate releases and follow semantic versioning",""],["OSS12","H","Secure publishing to package registries","?"],["OSS13","M","Keep a changelog",""],["OSS14","M","Manage dependencies",""],["OSS15","M","Set repository metadata",""],["OSS16","M","State the governance and support expectations",""],["OSS17","M","Decide the contribution licensing terms",""],["OSS18","L","Add funding and community links","?"],["OSS19","M","Check the project name for conflicts",""]]},{"k":"lib","n":"Library or SDK","core":0,"f":"type-developer-tools.md","items":[["DEV1","C","Define the public API surface and mark the rest as internal",""],["DEV2","C","Follow semantic versioning and decide when to release the first stable version",""],["DEV3","C","Inspect the package contents before publishing",""],["DEV4","C","Secure the registry account and publish from CI",""],["DEV5","H","Test against the supported runtime and platform matrix",""],["DEV6","H","Keep dependencies few and ranges sensible",""],["DEV7","H","Provide types, examples and reference documentation",""],["DEV8","H","Write errors that say what went wrong and what to do",""],["DEV9","H","Publish a deprecation policy and migration guides",""],["DEV10","M","Keep SDKs for several languages consistent","?"],["DEV11","M","Disclose any telemetry and make it opt-out or opt-in",""]]},{"k":"cli","n":"CLI tool","core":0,"f":"type-developer-tools.md","items":[["CLI1","H","Follow command-line conventions",""],["CLI2","H","Offer machine-readable output and a quiet mode",""],["CLI3","C","Protect users from destructive commands",""],["CLI4","C","Store credentials safely",""],["CLI5","H","Test installation by each supported method on each operating system",""],["CLI6","M","Provide an update path and an update notice",""],["CLI7","M","Add shell completion and a clear configuration order",""]]},{"k":"plat","n":"Developer platform","core":0,"f":"type-developer-tools.md","items":[["PLAT1","H","Build self-service onboarding",""],["PLAT2","H","Provide a sandbox, sample applications and a console",""],["PLAT3","H","Publish status, changelog and support channels",""],["PLAT4","H","Publish the terms for developers",""]]},{"k":"internal","n":"Internal tool","core":0,"f":"type-internal.md","items":[["INT1","C","Use the company's single sign-on",""],["INT2","C","Automate joiners, movers and leavers",""],["INT3","C","Define roles and approve them with the business owner",""],["INT4","H","Keep the tool off the public internet unless required",""],["INT5","H","Pass the company's security and architecture review",""],["INT6","H","Log access and changes for audit",""],["INT7","H","Test integrations with the systems of record",""],["INT8","H","Migrate data from the old tool or spreadsheet and plan the cutover",""],["INT9","H","Run user acceptance testing with real users",""],["INT10","H","Train users and communicate the change",""],["INT11","H","Agree who owns and supports the tool",""],["INT12","H","Meet employee data and works council requirements","?"],["INT13","M","Check compatibility with managed devices and browsers",""],["INT14","M","Follow company policies for data classification, retention and backup",""],["INT15","M","Plan the retirement of what this replaces",""]]},{"k":"selfhosted","n":"Self-hosted","core":0,"f":"type-self-hosted.md","items":[["SH1","C","Publish system requirements and supported environments",""],["SH2","C","Provide a tested installation path",""],["SH3","C","Test upgrades from every supported version",""],["SH4","C","Ship secure defaults",""],["SH5","C","Sign and scan release artifacts",""],["SH6","H","Document every configuration option",""],["SH7","H","Document backup, restore and disaster recovery for customers",""],["SH8","H","Provide health checks, metrics and logs in standard formats",""],["SH9","H","Build a support bundle that redacts secrets",""],["SH10","H","Publish the version support and security update policy",""],["SH11","H","Support restricted networks","?"],["SH12","H","Make telemetry and update checks opt-in or clearly controllable",""],["SH13","H","Implement licence enforcement that fails gently","?"],["SH14","H","Support the identity systems customers use","?"],["SH15","M","Document scaling and high availability",""],["SH16","M","Test compatibility and publish it",""],["SH17","M","Write release notes that flag breaking changes and required actions",""]]},{"k":"infra","n":"Cloud infrastructure","core":0,"f":"type-cloud-infra.md","items":[["INF1","C","Define all infrastructure as code, under review",""],["INF2","C","Protect and back up the infrastructure state",""],["INF3","C","Secure the root and administrator accounts",""],["INF4","C","Apply least privilege to people, services and pipelines",""],["INF5","C","Check for public exposure",""],["INF6","C","Separate environments and limit the blast radius",""],["INF7","C","Turn on audit logging and keep it tamper-resistant",""],["INF8","H","Design the network deliberately",""],["INF9","H","Encrypt data at rest and in transit, and manage the keys",""],["INF10","H","Manage secrets centrally with rotation",""],["INF11","H","Set budgets, alerts and tagging",""],["INF12","H","Check quotas and limits for launch capacity",""],["INF13","H","Design for failure of a zone, and decide about regions",""],["INF14","H","Back up data stores and test restores, including across accounts",""],["INF15","H","Monitor infrastructure and platform services with alerts and runbooks",""],["INF16","H","Harden and patch images, nodes and clusters",""],["INF17","H","Add policy checks to the pipeline",""],["INF18","M","Document the platform for the teams that use it",""],["INF19","M","Map the controls to the compliance standards that apply","?"],["INF20","M","Rehearse disaster recovery",""]]},{"k":"iot","n":"IoT device","core":0,"f":"type-iot.md","items":[["IOT1","C","Build secure over-the-air updates with rollback",""],["IOT2","C","Give every device a unique identity and credentials",""],["IOT3","C","Stage firmware rollouts",""],["IOT4","C","Meet the regulatory and certification requirements for each market",""],["IOT5","C","Secure the device",""],["IOT6","C","Assess physical safety and fail safely","?"],["IOT7","H","Publish the security update period and a vulnerability reporting contact",""],["IOT8","H","Work without the cloud where the user would expect it",""],["IOT9","H","Test the setup and pairing experience with ordinary users",""],["IOT10","H","Monitor the fleet",""],["IOT11","H","Test at fleet scale",""],["IOT12","H","Test in real conditions",""],["IOT13","H","Limit and disclose the data the device collects",""],["IOT14","H","Plan device lifecycle operations",""],["IOT15","H","Secure the manufacturing and provisioning process",""],["IOT16","M","Keep the companion app, firmware and backend compatible",""],["IOT17","M","Track open-source components and their licences in firmware",""]]}]};/*LIB:END*/
+
+  var total = 0;
+  LIB.groups.forEach(function (g) { total += g.items.length; });
+  doc.querySelectorAll("[data-total]").forEach(function (n) { n.textContent = total; });
+  if (!total) return;
+
+  var typeFacts = {};
+  LIB.types.forEach(function (t) { typeFacts[t[0]] = t[2]; });
+
+  function impliedFacts(types) {
+    var f = {};
+    types.forEach(function (k) { (typeFacts[k] || []).forEach(function (x) { f[x] = true; }); });
+    return f;
+  }
+  /* "in" applies, "ask" depends on a detail the skill asks about, "out" is ruled out. */
+  function state(cond, facts) {
+    if (!cond) return "in";
+    if (cond === "?") return "ask";
+    return cond.split("|").some(function (k) { return facts[k]; }) ? "in" : "out";
+  }
+  function compute(types, facts) {
+    var res = { n: { in: 0, ask: 0, out: 0 }, pri: { C: 0, H: 0, M: 0, L: 0 }, groups: [], byId: {} };
+    LIB.groups.forEach(function (g) {
+      if (!g.core && types.indexOf(g.k) < 0) return;
+      var rows = g.items.map(function (it) {
+        var s = state(it[3], facts);
+        res.n[s]++;
+        if (s === "in") res.pri[it[1]]++;
+        res.byId[it[0]] = { it: it, s: s };
+        return { it: it, s: s };
+      });
+      res.groups.push({ g: g, rows: rows });
+    });
+    return res;
+  }
+  function rowEl(r, i) {
+    var li = el("li", "row s-" + r.s);
+    if (i != null) li.style.setProperty("--i", i);
+    li.appendChild(el("span", "id", r.it[0]));
+    li.appendChild(el("span", "t", r.it[2]));
+    var dots = el("span", "dots");
+    dots.setAttribute("aria-hidden", "true");
+    li.appendChild(dots);
+    if (r.s === "in") li.appendChild(el("span", "lamp p-" + r.it[1], PRI[r.it[1]]));
+    else if (r.s === "ask") li.appendChild(el("span", "lamp l-ask", "Asks you"));
+    else li.appendChild(el("span", "lamp l-out", "Left out"));
+    return li;
+  }
+
+  /* Hero console: three example projects, filtered from the same library. */
+  var con = doc.querySelector(".console");
+  var EX = [
+    { cap: "Example 1 of 3: a static portfolio on a custom domain, with no forms and no analytics.",
+      found: [["Type", "Website"], ["Accounts", "None"], ["Personal data", "None collected"], ["Payments", "None"], ["Release", "Web deploy"]],
+      types: ["site"], extra: {}, show: ["B3", "D4", "M1", "M2", "C12", "B2"], out: ["A3", "L1", "F3"], ask: ["I9", "D11"],
+      cls: [["Risk profile", "Low", "low"], ["Undo a bad release", "In minutes", "low"], ["Outside lead time", "None", "low"]] },
+    { cap: "Example 2 of 3: a B2B SaaS with sign-in, subscriptions and customers in two regions.",
+      found: [["Type", "Web app, SaaS"], ["Accounts", "Email and Google sign-in"], ["Personal data", "Customer records"], ["Payments", "Subscriptions"], ["Release", "Web deploy"]],
+      types: ["webapp", "saas"], extra: {}, show: ["SAAS1", "SAAS2", "C2", "F3", "L2", "A6"], out: [], ask: ["A16", "C14", "SAAS5"],
+      cls: [["Risk profile", "High", "high"], ["Undo a bad release", "In minutes", "low"], ["Outside lead time", "Payment provider activation", "mod"]] },
+    { cap: "Example 3 of 3: an Android and iOS app with an AI assistant and in-app subscriptions.",
+      found: [["Type", "Mobile app, AI app"], ["Accounts", "Yes"], ["Personal data", "Uploaded documents"], ["Payments", "In-app purchase"], ["Release", "App stores"]],
+      types: ["mobile", "ai"], extra: { acct: true, data: true, pay: true }, show: ["MOB2", "MOB5", "MOB6", "AI2", "AI3", "AI4"], out: ["D3", "B4"], ask: ["MOB7", "MOB14", "AI13"],
+      cls: [["Risk profile", "High", "high"], ["Undo a bad release", "Not possible", "high"], ["Outside lead time", "Store enrolment and review", "mod"]] }
+  ];
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var bar = con.querySelector(".console-bar");
+  var exBtns = Array.prototype.slice.call(bar.querySelectorAll("[data-ex]"));
+  var play = bar.querySelector(".console-play");
+  var cur = 0, playing = !reduce, timer = null;
+
+  function names(res, ids, want) {
+    return ids.filter(function (id) { return res.byId[id] && res.byId[id].s === want; })
+      .map(function (id) { return res.byId[id].it[2]; });
+  }
+  function showExample(i, animate) {
+    cur = i;
+    var e = EX[i];
+    var facts = impliedFacts(e.types);
+    Object.keys(e.extra).forEach(function (k) { facts[k] = e.extra[k]; });
+    var res = compute(e.types, facts);
+    exBtns.forEach(function (b, j) { b.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+
+    var dl = con.querySelector(".found dl");
+    dl.textContent = "";
+    e.found.forEach(function (f) { dl.appendChild(el("dt", null, f[0])); dl.appendChild(el("dd", null, f[1])); });
+
+    var counts = con.querySelector(".counts");
+    counts.textContent = "";
+    [[res.n.in, "apply"], [res.pri.C, "critical"], [res.n.out, "left out"]].forEach(function (c) {
+      var s = el("span");
+      s.appendChild(el("b", null, c[0]));
+      s.appendChild(doc.createTextNode(c[1]));
+      counts.appendChild(s);
+    });
+
+    var rows = con.querySelector(".rows");
+    rows.textContent = "";
+    var k = 0;
+    e.show.forEach(function (id) {
+      var r = res.byId[id];
+      if (r && r.s === "in") rows.appendChild(rowEl(r, k++));
+    });
+
+    var notes = con.querySelector(".console-notes");
+    notes.textContent = "";
+    notes.style.setProperty("--i", k);
+    [["Left out: ", names(res, e.out, "out")], ["Asks you about: ", names(res, e.ask, "ask")]].forEach(function (n) {
+      if (!n[1].length) return;
+      var p = el("p");
+      p.appendChild(el("b", null, n[0]));
+      p.appendChild(doc.createTextNode(n[1].map(function (t) { return t.charAt(0).toLowerCase() + t.slice(1); }).join("; ") + "."));
+      notes.appendChild(p);
+    });
+    notes.hidden = !notes.childNodes.length;
+
+    var foot = con.querySelector(".console-foot");
+    foot.textContent = "";
+    e.cls.forEach(function (c) {
+      var d = el("div", null, c[0]);
+      d.appendChild(el("strong", "v-" + c[2], c[1]));
+      foot.appendChild(d);
+    });
+    con.querySelector("figcaption").textContent = e.cap + " Counts come from the skill's own library.";
+
+    con.classList.remove("anim");
+    if (animate && !reduce) { void con.offsetWidth; con.classList.add("anim"); }
+  }
+  function setPlaying(v) {
+    playing = v;
+    clearInterval(timer);
+    if (v) timer = setInterval(function () { showExample((cur + 1) % EX.length, true); }, 7000);
+    play.querySelector("use").setAttribute("href", v ? "#i-pause" : "#i-play");
+    play.querySelector("span").textContent = v ? "Pause" : "Play";
+  }
+  exBtns.forEach(function (b, i) {
+    b.addEventListener("click", function () { setPlaying(false); showExample(i, true); });
+  });
+  play.addEventListener("click", function () { setPlaying(!playing); });
+  bar.hidden = false;
+  showExample(0, true);
+  setPlaying(playing);
+
+  /* Picker */
+  var picker = doc.querySelector(".picker");
+  var typeBox = picker.querySelector("[data-types]");
+  var factBox = picker.querySelector("[data-facts]");
+  var sheet = picker.querySelector("[data-sheet]");
+  var mix = picker.querySelector("[data-mix]");
+  var viewBtns = Array.prototype.slice.call(picker.querySelectorAll("[data-view]"));
+  var chosen = ["webapp", "saas"], manual = {}, view = "crit";
+
+  function chip(label, onClick) {
+    var b = el("button", "chip", label);
+    b.type = "button";
+    b.addEventListener("click", onClick);
+    return b;
+  }
+  var typeChips = LIB.types.map(function (t) {
+    var b = chip(t[1], function () {
+      var at = chosen.indexOf(t[0]);
+      if (at < 0) chosen.push(t[0]); else chosen.splice(at, 1);
+      manual = {};
+      paint();
+    });
+    typeBox.appendChild(b);
+    return b;
+  });
+  var factChips = LIB.facts.map(function (f) {
+    var b = chip(f[1], function () {
+      manual[f[0]] = !facts()[f[0]];
+      paint();
+    });
+    factBox.appendChild(b);
+    return b;
+  });
+  function facts() {
+    var f = impliedFacts(chosen);
+    Object.keys(manual).forEach(function (k) { f[k] = manual[k]; });
+    return f;
+  }
+  function paint() {
+    var f = facts();
+    var res = compute(chosen, f);
+    LIB.types.forEach(function (t, i) { typeChips[i].setAttribute("aria-pressed", chosen.indexOf(t[0]) >= 0 ? "true" : "false"); });
+    LIB.facts.forEach(function (x, i) { factChips[i].setAttribute("aria-pressed", f[x[0]] ? "true" : "false"); });
+    viewBtns.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-view") === view ? "true" : "false"); });
+    ["in", "ask", "out"].forEach(function (k) { picker.querySelector('[data-n="' + k + '"]').textContent = res.n[k]; });
+
+    mix.textContent = "";
+    mix.appendChild(doc.createTextNode("Of those that apply:"));
+    ["C", "H", "M", "L"].forEach(function (p) { mix.appendChild(el("span", "lamp p-" + p, res.pri[p] + " " + PRI[p].toLowerCase())); });
+
+    sheet.textContent = "";
+    if (!chosen.length) sheet.appendChild(el("p", "empty", "No type is chosen, so only the core checklist is shown. Choose a type to add its items."));
+    res.groups.forEach(function (G) {
+      var rows = G.rows.filter(function (r) {
+        if (view === "crit") return r.s === "in" && r.it[1] === "C";
+        if (view === "in") return r.s !== "out";
+        return true;
+      });
+      if (!rows.length) return;
+      var h = el("h3");
+      h.appendChild(el("span", null, G.g.n));
+      var a = el("a", null, "Read the full items");
+      a.href = REPO + G.g.f;
+      h.appendChild(a);
+      sheet.appendChild(h);
+      var ul = el("ul");
+      rows.forEach(function (r) { ul.appendChild(rowEl(r)); });
+      sheet.appendChild(ul);
+    });
+    sheet.scrollTop = 0;
+  }
+  viewBtns.forEach(function (b) {
+    b.addEventListener("click", function () { view = b.getAttribute("data-view"); paint(); });
+  });
+  picker.hidden = false;
+  paint();
+})();
+</script>
+</body>
+</html>
