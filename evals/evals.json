@@ -1,0 +1,23 @@
+{
+  "skill_name": "launch-checklist",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm launching a B2B SaaS next month. Next.js frontend, Node API, Postgres on a managed host, Stripe subscriptions, login with email and Google. The company is registered in India and customers are mostly in India and a few in the EU. Team of three. Public launch. What do I need to do before going live?",
+      "expected_output": "A checklist file that classifies the project as web application plus SaaS, Moderate or High risk, with India and EU jurisdiction items; includes tenant isolation, webhook verification, subscription lifecycle and live-mode payment tests as blockers; marks items Not Applicable with reasons; flags lead-time items such as payment provider activation; states assumptions; cites official sources with dates for legal and provider facts instead of quoting rules from memory.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "ok so my portfolio site is basically done, plain HTML and CSS on GitHub Pages with a custom domain. no forms, no analytics, no login. going to share it on linkedin this weekend. anything i'm missing?",
+      "expected_output": "A short checklist proportionate to a static site. Low risk. Security, payments, accounts, backups and load items are Not Applicable with reasons. Focus on HTTPS and canonical host, SEO basics, social preview, accessibility, responsive checks, broken links and domain ownership. Does not recommend analytics, cookie banners or a privacy policy as obligations when no personal data is collected.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "We built an Android and iOS app with an AI chat assistant that answers questions about a user's uploaded medical reports. Uses a hosted LLM API. Subscription through in-app purchase. Users in the US and India. We want to submit to the stores in two weeks. Give me just the launch blockers.",
+      "expected_output": "Blockers-only depth. High or Critical risk because of health data. Combines the mobile and AI type files. Blockers include store privacy declarations, account deletion, store payment rules, provider data handling confirmed at the provider's page, prompt injection and wrong-answer testing, usage limits, health disclaimers and professional legal review. Flags store review and developer enrolment lead time against the two-week date. States that store and provider rules must be read at the official pages and records which were checked.",
+      "files": []
+    }
+  ]
+}
